@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jurnal Mood Mingguan</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background:
+                radial-gradient(circle at 15% 20%, rgba(255,255,255,0.9) 0 6%, transparent 7%),
+                radial-gradient(circle at 75% 15%, rgba(255,255,255,0.8) 0 7%, transparent 8%),
+                linear-gradient(180deg, #dff9ff 0%, #d8f7d7 32%, #bfe7a4 62%, #74b76c 100%);
+            color: #713F12;
+            margin: 0;
+            padding: 20px 20px 60px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+            position: relative;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            left: -8%;
+            right: -8%;
+            bottom: -40px;
+            height: 180px;
+            background:
+                radial-gradient(circle at 18% 34%, #7acb6c 0 20%, transparent 21%),
+                radial-gradient(circle at 36% 22%, #8ed77c 0 19%, transparent 20%),
+                radial-gradient(circle at 60% 28%, #91d57e 0 22%, transparent 23%),
+                radial-gradient(circle at 80% 34%, #82ce67 0 19%, transparent 20%),
+                linear-gradient(180deg, rgba(75,155,82,0.28), rgba(37,96,54,0.8));
+            border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 10% 76%, rgba(255, 255, 255, 0.25) 0 4%, transparent 4.5%),
+                radial-gradient(circle at 22% 78%, rgba(255, 255, 255, 0.28) 0 3.2%, transparent 3.7%),
+                radial-gradient(circle at 70% 71%, rgba(255, 255, 255, 0.25) 0 3.7%, transparent 4.2%),
+                radial-gradient(circle at 84% 79%, rgba(255, 255, 255, 0.26) 0 4.2%, transparent 4.7%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(3px);
+            padding: 25px;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(34, 94, 52, 0.15);
+            border: 2px solid rgba(254, 240, 138, 0.9);
+            position: relative;
+            z-index: 1;
+        }
+
+        .intro-screen {
+            max-width: 500px;
+            width: 100%;
+            background: linear-gradient(180deg, rgba(255,253,247,0.94) 0%, rgba(255,243,196,0.9) 100%);
+            border-radius: 30px;
+            border: 2px solid #FDE68A;
+            box-shadow: 0 12px 30px rgba(67, 117, 57, 0.18);
+            padding: 28px 22px 24px;
+            text-align: center;
+            animation: fadeIn 0.4s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .intro-screen::before,
+        .intro-screen::after {
+            content: "🌼";
+            position: absolute;
+            font-size: 28px;
+            opacity: 0.8;
+        }
+
+        .intro-screen::before {
+            left: 16px;
+            top: 30px;
+        }
+
+        .intro-screen::after {
+            right: 18px;
+            bottom: 26px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .character-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .character-thumb {
+            position: relative;
+            width: 152px;
+            height: 152px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #fde68a 0%, #f9a8d4 100%);
+            box-shadow: 0 12px 25px rgba(236, 72, 153, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 5px solid #fff;
+        }
+
+        .character-hand {
+            position: absolute;
+            z-index: 2;
+            top: 25px;
+            right: -25px;
+            font-size: 42px;
+            transform-origin: 15% 80%;
+            animation: wave 1.4s ease-in-out infinite;
+        }
+
+        @keyframes wave {
+            0%, 100% { transform: rotate(12deg); }
+            50% { transform: rotate(-18deg); }
+        }
+
+        .character-thumb .ear {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: #f9a8d4;
+            border-radius: 50%;
+            top: 10px;
+        }
+
+        .character-thumb .ear.left { left: 18px; }
+        .character-thumb .ear.right { right: 18px; }
+
+        .character-face {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            background: #fff9ed;
+            border-radius: 50%;
+            box-shadow: inset 0 -8px 0 rgba(251, 191, 36, 0.16);
+        }
+
+        .character-face .eye {
+            position: absolute;
+            width: 9px;
+            height: 15px;
+            background: #4b2e1f;
+            border-radius: 999px;
+            top: 34px;
+        }
+
+        .character-face .eye.left { left: 25px; }
+        .character-face .eye.right { right: 25px; }
+
+        .character-face .blush {
+            position: absolute;
+            width: 15px;
+            height: 10px;
+            background: rgba(251, 113, 133, 0.35);
+            border-radius: 50%;
+            top: 52px;
+        }
+
+        .character-face .blush.left { left: 12px; }
+        .character-face .blush.right { right: 12px; }
+
+        .character-face .smile {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 20px;
+            width: 36px;
+            height: 18px;
+            border-bottom: 5px solid #f59e0b;
+            border-radius: 0 0 25px 25px;
+        }
+
+        .intro-title {
+            margin: 0;
+            font-size: 30px;
+            color: #CA8A04;
+        }
+
+        .intro-text {
+            margin: 0;
+            color: #8b5e1f;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .intro-input {
+            width: 85%;
+            margin-top: 4px;
+            padding: 12px 14px;
+            border: 2px solid #FDE68A;
+            border-radius: 14px;
+            outline: none;
+            background: rgba(255,255,255,0.7);
+            font-size: 15px;
+            color: #713F12;
+            text-align: center;
+        }
+
+        .intro-input:focus {
+            border-color: #EAB308;
+            box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.15);
+        }
+
+        .start-btn {
+            width: 100%;
+            margin-top: 8px;
+            padding: 14px 18px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: white;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            box-shadow: 0 8px 18px rgba(245, 158, 11, 0.3);
+            transition: transform 0.2s ease;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .tracker-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 22px;
+        }
+
+        .save-day-btn,
+        .save-week-btn,
+        .primary-btn,
+        .secondary-btn,
+        .back-btn {
+            flex: 1;
+            border: none;
+            border-radius: 12px;
+            padding: 13px 14px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .save-day-btn {
+            background: #ecfeff;
+            color: #0f766e;
+            border: 1px solid #99f6e4;
+            margin-top: 12px;
+            width: 100%;
+            flex: unset;
+        }
+
+        .save-week-btn {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            color: white;
+            box-shadow: 0 8px 18px rgba(22, 163, 74, 0.25);
+            margin-top: 14px;
+        }
+
+        .primary-btn:hover,
+        .secondary-btn:hover,
+        .back-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .primary-btn {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: white;
+            box-shadow: 0 8px 18px rgba(245, 158, 11, 0.25);
+        }
+
+        .secondary-btn {
+            background: #fff7d6;
+            color: #9a5d00;
+            border: 1px solid #f7d77d;
+        }
+
+        .result-screen {
+            max-width: 560px;
+            width: 100%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,249,220,0.92));
+            border: 2px solid #FDE68A;
+            border-radius: 28px;
+            box-shadow: 0 15px 35px rgba(99, 128, 68, 0.16);
+            padding: 24px 20px 22px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .result-header h2 {
+            margin: 0;
+            font-size: 24px;
+            color: #A16207;
+        }
+
+        .back-btn {
+            background: #fff;
+            color: #8b5d1f;
+            border: 2px solid #FDE68A;
+            flex: 0 0 auto;
+            padding-inline: 12px;
+        }
+
+        .result-card {
+            background: #fffdf6;
+            border-radius: 18px;
+            border: 1.5px solid #f8e7a8;
+            padding: 16px;
+            margin-bottom: 18px;
+        }
+
+        .result-card h3 {
+            margin: 0 0 10px;
+            color: #A16207;
+            font-size: 18px;
+        }
+
+        .result-summary {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .mood-pill {
+            padding: 7px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #7c4516;
+            background: #fef3c7;
+        }
+
+        .tip-list {
+            list-style: none;
+            margin: 10px 0 0;
+            padding: 0;
+            display: grid;
+            gap: 10px;
+        }
+
+        .tip-list li {
+            background: #fefce8;
+            border-left: 4px solid #f59e0b;
+            border-radius: 10px;
+            padding: 10px 12px;
+            color: #7b4d18;
+            line-height: 1.45;
+            font-size: 13.5px;
+        }
+
+        .monthly-box {
+            background: linear-gradient(135deg, #fef3c7, #fff7d9);
+            border: 1px solid #f7d77d;
+            border-radius: 18px;
+            padding: 16px;
+        }
+
+        .monthly-box h3 {
+            margin: 0 0 8px;
+            color: #A16207;
+            font-size: 18px;
+        }
+
+        .trend-status {
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-weight: 700;
+            margin-top: 6px;
+        }
+
+        .trend-up {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .trend-down {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .trend-same {
+            background: #e0f2fe;
+            color: #075985;
+        }
+
+        h1 {
+            text-align: center;
+            color: #CA8A04;
+            font-size: 26px;
+            margin-bottom: 5px;
+        }
+        .header-section {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .input-nama {
+            font-size: 16px;
+            text-align: center;
+            border: none;
+            border-bottom: 2px dashed #FDE047;
+            padding: 8px;
+            color: #854D0E;
+            font-weight: bold;
+            width: 80%;
+            outline: none;
+            background: transparent;
+            margin-top: 5px;
+            transition: 0.3s;
+        }
+        .input-nama:focus {
+            border-bottom: 2px solid #EAB308;
+        }
+        .input-nama::placeholder {
+            color: #D1D5DB;
+            font-weight: normal;
+        }
+        .day-card {
+            border: 2px solid #FEF08A;
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 15px;
+            background-color: #FFFEF9;
+        }
+        .day-title {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: #A16207;
+            display: flex;
+            justify-content: space-between;
+        }
+        .mood-options {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+        .mood-btn {
+            flex: 1;
+            min-width: 55px;
+            padding: 8px 5px;
+            font-size: 20px;
+            border: 2px solid;
+            background-color: white;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        .mood-btn span { font-size: 11px; font-weight: bold; }
+        .mood-btn:active { transform: scale(0.95); }
+        
+        .mood-senang { border-color: #34D399; color: #059669; }
+        .mood-senang.active { background-color: #10B981; color: white; border-color:#10B981;}
+        
+        .mood-biasa { border-color: #9CA3AF; color: #4B5563; }
+        .mood-biasa.active { background-color: #6B7280; color: white; border-color:#6B7280;}
+        
+        .mood-sedih { border-color: #93C5FD; color: #2563EB; }
+        .mood-sedih.active { background-color: #3B82F6; color: white; border-color:#3B82F6;}
+        
+        .mood-marah { border-color: #FCA5A5; color: #DC2626; }
+        .mood-marah.active { background-color: #EF4444; color: white; border-color:#EF4444;}
+        
+        .mood-capek { border-color: #C4B5FD; color: #7C3AED; }
+        .mood-capek.active { background-color: #8B5CF6; color: white; border-color:#8B5CF6;}
+
+        .input-deskripsi {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #FDE047;
+            border-radius: 10px;
+            box-sizing: border-box;
+            font-size: 13px;
+            font-family: inherit;
+            color: #713F12;
+            background-color: #FEFCE8;
+            outline: none;
+        }
+        .input-deskripsi:focus { border-color: #EAB308; }
+
+        .summary-card {
+            margin-top: 30px;
+            padding: 22px;
+            border-radius: 18px;
+            background: #FEF9C3;
+            border: 2px dashed #FDE047;
+        }
+        .summary-title {
+            font-weight: bold;
+            color: #A16207;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .stat-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .stat-label { width: 85px; display: flex; align-items: center; gap: 5px; }
+        .stat-bar-container {
+            flex: 1;
+            background-color: #FEF08A;
+            height: 14px;
+            border-radius: 10px;
+            margin: 0 10px;
+            overflow: hidden;
+        }
+        .stat-bar { height: 100%; border-radius: 10px; transition: width 0.5s ease-out; }
+        .stat-percent { width: 45px; text-align: right; color: #854D0E; }
+        
+        .advice-box {
+            background-color: white;
+            border-left: 5px solid #F59E0B;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 20px;
+            font-size: 13.5px;
+            line-height: 1.5;
+            color: #92400E;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            display: none;
+        }
+
+        .reset-btn {
+            width: 100%;
+            padding: 14px;
+            margin-top: 20px;
+            background-color: #EAB308;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 4px 10px rgba(234, 179, 8, 0.4);
+        }
+        .reset-btn:hover { background-color: #CA8A04; }
+    </style>
+</head>
+<body>
+    <div id="intro-screen" class="intro-screen">
+        <div class="character-card">
+            <div class="character-thumb">
+                <div class="ear left"></div>
+                <div class="ear right"></div>
+                <div class="character-face">
+                    <span class="eye left"></span>
+                    <span class="eye right"></span>
+                    <span class="blush left"></span>
+                    <span class="blush right"></span>
+                    <span class="smile"></span>
+                </div>
+                <span class="character-hand" role="img" aria-label="Bubu melambaikan tangan">👋</span>
+            </div>
+
+            <h2 class="intro-title">Halo, aku Bubu! 👋</h2>
+            <p class="intro-text">Aku siap mendengarkan moodmu hari ini. Yuk, tulis namamu dulu lalu mulai jurnal minggu ini.</p>
+            <input type="text" id="intro-nama" class="intro-input" placeholder="Masukkan namamu..." maxlength="20">
+            <button id="start-btn" class="start-btn">Mulai Mood Tracker</button>
+        </div>
+    </div>
+
+    <div class="container hidden" id="main-app">
+        <div class="header-section">
+            <h1>🌻 Mood Tracker 🌻</h1>
+            <input type="text" id="input-nama" class="input-nama" placeholder="Masukkan namamu di sini..." oninput="simpanNama()">
+        </div>
+
+        <div id="days-container">
+            <!-- Hari-hari akan di-render lewat JavaScript -->
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-title">📊 Rangkuman Mingguanmu</div>
+            <div style="text-align: center; font-size: 13px; color: #A16207; margin-bottom: 15px;" id="hari-terisi">
+                0 dari 7 hari terisi
+            </div>
+            
+            <div id="stats-container">
+                <!-- Bar persentase akan muncul di sini -->
+            </div>
+
+            <div id="advice-container" class="advice-box"></div>
+
+            <div class="tracker-actions">
+                <button class="secondary-btn" onclick="resetMinggu()">🔄 Reset</button>
+                <button class="primary-btn" id="lihat-saran-btn">Lihat Saran</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="result-screen hidden" id="result-screen">
+        <div class="result-header">
+            <h2>🌿 Hasil Minggunya</h2>
+            <button class="back-btn" id="kembali-btn">Kembali</button>
+        </div>
+
+        <div class="result-card">
+            <h3>📌 Ringkasan Mood</h3>
+            <div id="result-summary" class="result-summary"></div>
+        </div>
+
+        <div class="result-card">
+            <h3>💡 Saran yang bisa kamu lakukan</h3>
+            <ul id="tip-list" class="tip-list"></ul>
+        </div>
+
+        <button class="save-week-btn" id="save-week-btn">💾 Simpan Mingguan</button>
+
+        <div class="monthly-box">
+            <h3>📈 Evaluasi Bulanan</h3>
+            <div id="monthly-status"></div>
+        </div>
+    </div>
+
+    <script>
+        const namaHari = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+        const opsiMood = [
+            { id: 'senang', nama: 'Senang', emoji: '😊', warna: '#059669' },
+            { id: 'biasa', nama: 'Biasa', emoji: '😐', warna: '#4B5563' },
+            { id: 'sedih', nama: 'Sedih', emoji: '😢', warna: '#2563EB' },
+            { id: 'marah', nama: 'Marah', emoji: '😠', warna: '#DC2626' },
+            { id: 'capek', nama: 'Capek', emoji: '😴', warna: '#7C3AED' }
+        ];
+
+        // Ambil data dari LocalStorage
+        let dataMingguan = JSON.parse(localStorage.getItem('jurnalMoodV2')) || {};
+        let namaUser = localStorage.getItem('namaJurnalMood') || '';
+
+        const introScreen = document.getElementById('intro-screen');
+        const mainApp = document.getElementById('main-app');
+        const resultScreen = document.getElementById('result-screen');
+        const introNama = document.getElementById('intro-nama');
+        const inputNama = document.getElementById('input-nama');
+        const resultSummary = document.getElementById('result-summary');
+        const tipList = document.getElementById('tip-list');
+        const monthlyStatus = document.getElementById('monthly-status');
+
+        inputNama.value = namaUser;
+        if (namaUser) {
+            introNama.value = namaUser;
+        }
+
+        function simpanNama() {
+            const nama = inputNama.value;
+            localStorage.setItem('namaJurnalMood', nama);
+            if (introNama) introNama.value = nama;
+            hitungPersentase();
+        }
+
+        function getWeekKey() {
+            const now = new Date();
+            const monday = new Date(now);
+            const day = (now.getDay() + 6) % 7;
+            monday.setDate(now.getDate() - day);
+            monday.setHours(0, 0, 0, 0);
+            return `${monday.getFullYear()}-${monday.getMonth() + 1}-${monday.getDate()}`;
+        }
+
+        function getMonthKey() {
+            const now = new Date();
+            return `${now.getFullYear()}-${now.getMonth() + 1}`;
+        }
+
+        function hitungNilaiMood(moodId) {
+            const scoreMap = { senang: 5, biasa: 3, sedih: 1, marah: 0, capek: 2 };
+            return scoreMap[moodId] || 0;
+        }
+
+        function simpanHari(hari) {
+            if (!dataMingguan[hari]) {
+                alert('Belum ada data untuk hari ini. Isi mood dulu ya.');
+                return;
+            }
+
+            const weekKey = getWeekKey();
+            const dailyStorage = JSON.parse(localStorage.getItem('moodDailyHistory')) || {};
+            if (!dailyStorage[weekKey]) dailyStorage[weekKey] = {};
+            dailyStorage[weekKey][hari] = dataMingguan[hari];
+            localStorage.setItem('moodDailyHistory', JSON.stringify(dailyStorage));
+            alert(`${hari} berhasil disimpan.`);
+        }
+
+        function simpanMingguan() {
+            const dataTerisi = Object.values(dataMingguan).filter(item => item && item.mood).length;
+            if (dataTerisi === 0) {
+                alert('Isi setidaknya satu hari mood dulu ya agar bisa disimpan mingguan.');
+                return false;
+            }
+
+            const weekKey = getWeekKey();
+            const monthKey = getMonthKey();
+            const totalNilai = Object.values(dataMingguan).reduce((sum, item) => sum + hitungNilaiMood(item?.mood), 0);
+            const totalHari = Object.values(dataMingguan).filter(item => item && item.mood).length;
+            const rataNilai = totalHari ? (totalNilai / totalHari).toFixed(1) : '0';
+
+            const weeklyArchive = JSON.parse(localStorage.getItem('moodWeeklyHistory')) || [];
+            const index = weeklyArchive.findIndex(item => item.weekKey === weekKey);
+            const record = {
+                weekKey,
+                monthKey,
+                score: Number(rataNilai),
+                savedAt: new Date().toISOString(),
+                data: dataMingguan
+            };
+
+            if (index >= 0) weeklyArchive[index] = record;
+            else weeklyArchive.push(record);
+
+            localStorage.setItem('moodWeeklyHistory', JSON.stringify(weeklyArchive));
+            return true;
+        }
+
+        function mulaiTracker() {
+            const nama = introNama.value.trim() || 'Teman';
+
+            inputNama.value = nama;
+            localStorage.setItem('namaJurnalMood', nama);
+            introScreen.classList.add('hidden');
+            mainApp.classList.remove('hidden');
+            resultScreen.classList.add('hidden');
+            hitungPersentase();
+        }
+
+        function tampilkanHasil() {
+            const dataTerisi = Object.values(dataMingguan).filter(item => item && item.mood).length;
+            if (dataTerisi === 0) {
+                alert('Isi setidaknya satu hari mood dulu ya agar saran bisa dibuat.');
+                return;
+            }
+
+            const hitungan = { senang: 0, biasa: 0, sedih: 0, marah: 0, capek: 0 };
+            for (const hari in dataMingguan) {
+                const mood = dataMingguan[hari].mood;
+                if (mood) hitungan[mood]++;
+            }
+
+            const skorMinggu = Object.entries(hitungan).reduce((total, [key, value]) => {
+                const bobot = { senang: 5, biasa: 3, sedih: 1, marah: 0, capek: 2 };
+                return total + (value * bobot[key]);
+            }, 0);
+
+            const totalMood = Object.values(hitungan).reduce((sum, n) => sum + n, 0);
+            const rataSkor = totalMood ? (skorMinggu / totalMood).toFixed(1) : 0;
+
+            const summary = Object.entries(hitungan)
+                .filter(([_, jumlah]) => jumlah > 0)
+                .map(([mood, jumlah]) => `${opsiMood.find(item => item.id === mood)?.emoji || ''} ${opsiMood.find(item => item.id === mood)?.nama || mood}: ${jumlah} hari`)
+                .join(' • ');
+
+            resultSummary.innerHTML = `
+                <div class="mood-pill">Rata-rata skor: ${rataSkor}</div>
+                <div class="mood-pill">${summary}</div>
+            `;
+
+            const tips = [];
+            if (hitungan.marah > 0) {
+                tips.push('Ambil waktu 5 menit untuk bernapas panjang dan menenangkan diri sebelum memutuskan sesuatu yang membuatmu emosi.');
+            }
+            if (hitungan.sedih > 0) {
+                tips.push('Coba lakukan hal kecil yang membuat hati terasa lebih ringan, seperti minum teh hangat, dengarkan lagu favorit, atau menulis satu hal yang bikin kamu bersyukur.');
+            }
+            if (hitungan.capek > 0) {
+                tips.push('Jangan memaksakan diri terlalu keras. Prioritaskan tidur cukup, istirahat singkat, dan buat jadwal yang lebih ringan untuk besok.');
+            }
+            if (hitungan.senang > 0) {
+                tips.push('Pertahankan energi positif ini dengan meluangkan waktu untuk hal yang membuatmu merasa bahagia dan sehat secara mental.');
+            }
+            if (tips.length === 0) {
+                tips.push('Hari-hari minggu ini terlihat cukup stabil. Pertahankan keseimbanganmu dan tetap jaga rutinitas yang bikin kamu nyaman.');
+            }
+
+            tipList.innerHTML = tips.map(tip => `<li>${tip}</li>`).join('');
+            if (simpanMingguan()) {
+                evaluasiBulanan();
+            }
+
+            mainApp.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+        }
+
+        function evaluasiBulanan() {
+            const weeklyHistory = JSON.parse(localStorage.getItem('moodWeeklyHistory')) || [];
+            const currentMonth = new Date().getMonth() + 1;
+            const currentYear = new Date().getFullYear();
+            const currentMonthKey = `${currentYear}-${currentMonth}`;
+
+            const thisMonthEntries = weeklyHistory.filter(entry => entry.monthKey === currentMonthKey);
+            const previousMonth = new Date(currentYear, new Date().getMonth() - 1, 1);
+            const previousMonthKey = `${previousMonth.getFullYear()}-${previousMonth.getMonth() + 1}`;
+            const previousMonthEntries = weeklyHistory.filter(entry => entry.monthKey === previousMonthKey);
+
+            if (thisMonthEntries.length === 0 && previousMonthEntries.length === 0) {
+                monthlyStatus.innerHTML = '<div class="trend-status trend-same">Belum ada cukup data untuk evaluasi bulan ini.</div>';
+                return;
+            }
+
+            const avgThisMonth = thisMonthEntries.length ? thisMonthEntries.reduce((sum, item) => sum + item.score, 0) / thisMonthEntries.length : 0;
+            const avgPrevMonth = previousMonthEntries.length ? previousMonthEntries.reduce((sum, item) => sum + item.score, 0) / previousMonthEntries.length : avgThisMonth;
+            const delta = avgThisMonth - avgPrevMonth;
+
+            let statusText = '';
+            let statusClass = 'trend-same';
+            if (delta > 1.5) {
+                statusText = 'Perkembangan kamu naik 🥳';
+                statusClass = 'trend-up';
+            } else if (delta < -1.5) {
+                statusText = 'Perkembangan kamu turun 😔';
+                statusClass = 'trend-down';
+            } else {
+                statusText = 'Perkembangan kamu masih sama ✨';
+                statusClass = 'trend-same';
+            }
+
+            monthlyStatus.innerHTML = `
+                <div class="trend-status ${statusClass}">${statusText}</div>
+                <p style="margin: 10px 0 0; color: #7c4516; line-height: 1.5;">
+                    Rata-rata bulan ini: <strong>${avgThisMonth.toFixed(1)}</strong> • Rata-rata bulan lalu: <strong>${avgPrevMonth.toFixed(1)}</strong>
+                </p>
+            `;
+        }
+
+        document.getElementById('start-btn').addEventListener('click', mulaiTracker);
+        document.getElementById('lihat-saran-btn').addEventListener('click', tampilkanHasil);
+        document.getElementById('save-week-btn').addEventListener('click', () => {
+            if (simpanMingguan()) {
+                evaluasiBulanan();
+                alert('Data minggu ini berhasil disimpan untuk evaluasi bulan ini.');
+            }
+        });
+        document.getElementById('kembali-btn').addEventListener('click', () => {
+            resultScreen.classList.add('hidden');
+            mainApp.classList.remove('hidden');
+        });
+
+        introNama.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                mulaiTracker();
+            }
+        });
+
+        function simpanData() {
+            localStorage.setItem('jurnalMoodV2', JSON.stringify(dataMingguan));
+            renderHari();
+            hitungPersentase();
+        }
+
+        function pilihMood(hari, moodId) {
+            if (!dataMingguan[hari]) dataMingguan[hari] = { mood: '', deskripsi: '' };
+            dataMingguan[hari].mood = moodId;
+            simpanData();
+        }
+
+        function simpanDeskripsi(hari, teks) {
+            if (!dataMingguan[hari]) dataMingguan[hari] = { mood: '', deskripsi: '' };
+            dataMingguan[hari].deskripsi = teks;
+            simpanData();
+        }
+
+        function resetMinggu() {
+            if(confirm("Yakin mau menghapus data minggu ini dan mulai lembaran baru? 🌻")) {
+                dataMingguan = {};
+                simpanData();
+            }
+        }
+
+        function renderHari() {
+            const container = document.getElementById('days-container');
+            container.innerHTML = '';
+
+            namaHari.forEach(hari => {
+                const dataHariIni = dataMingguan[hari] || { mood: '', deskripsi: '' };
+                const moodTerpilih = dataHariIni.mood;
+                const deskripsi = dataHariIni.deskripsi;
+
+                let tombolHTML = '';
+                opsiMood.forEach(opsi => {
+                    const isActive = moodTerpilih === opsi.id ? 'active' : '';
+                    tombolHTML += `
+                        <button class="mood-btn mood-${opsi.id} ${isActive}" onclick="pilihMood('${hari}', '${opsi.id}')">
+                            ${opsi.emoji} <span>${opsi.nama}</span>
+                        </button>
+                    `;
+                });
+
+                container.innerHTML += `
+                    <div class="day-card">
+                        <div class="day-title">
+                            <span>📅 ${hari}</span>
+                            <span>${moodTerpilih ? '✅' : ''}</span>
+                        </div>
+                        <div class="mood-options">
+                            ${tombolHTML}
+                        </div>
+                        <input type="text" class="input-deskripsi" placeholder="Ada cerita apa hari ini? Ketik di sini..." 
+                               value="${deskripsi}" onchange="simpanDeskripsi('${hari}', this.value)">
+                        <button class="save-day-btn" onclick="simpanHari('${hari}')">💾 Simpan Hari Ini</button>
+                    </div>
+                `;
+            });
+        }
+
+        function hitungPersentase() {
+            const statContainer = document.getElementById('stats-container');
+            const adviceContainer = document.getElementById('advice-container');
+            statContainer.innerHTML = '';
+            
+            // Cek jumlah hari yang sudah diisi mood-nya
+            let hariTerisi = 0;
+            let hitungan = { senang: 0, biasa: 0, sedih: 0, marah: 0, capek: 0 };
+
+            for (let hari in dataMingguan) {
+                if (dataMingguan[hari].mood !== '') {
+                    hariTerisi++;
+                    hitungan[dataMingguan[hari].mood]++;
+                }
+            }
+
+            document.getElementById('hari-terisi').innerText = `${hariTerisi} dari 7 hari terisi`;
+
+            if (hariTerisi === 0) {
+                statContainer.innerHTML = '<div style="text-align:center; color:#A16207; font-size:13px; font-style:italic;">Pilih minimal 1 mood untuk melihat hasilnya.</div>';
+                adviceContainer.style.display = 'none';
+                return;
+            }
+
+            // Buat bar persentase
+            opsiMood.forEach(opsi => {
+                const jumlah = hitungan[opsi.id];
+                const persen = Math.round((jumlah / hariTerisi) * 100);
+                
+                if (persen > 0) {
+                    statContainer.innerHTML += `
+                        <div class="stat-row">
+                            <div class="stat-label">${opsi.emoji} <span style="color:${opsi.warna}">${opsi.nama}</span></div>
+                            <div class="stat-bar-container">
+                                <div class="stat-bar" style="width: ${persen}%; background-color: ${opsi.warna};"></div>
+                            </div>
+                            <div class="stat-percent">${persen}%</div>
+                        </div>
+                    `;
+                }
+            });
+
+            // 💡 FITUR ADVICE (SARAN)
+            let saranHTML = '';
+            const sapaan = document.getElementById('input-nama').value || 'Bestie';
+
+            if (hitungan.marah > 0) {
+                saranHTML += `<strong>💡 Advice buat ${sapaan}:</strong> Sepertinya ada hari di mana kamu merasa marah ya minggu ini? Nggak apa-apa, marah itu valid dan manusiawi kok! Coba luangkan waktu 5 menit untuk tarik napas panjang, minum segelas air hangat, atau dengerin lagu favoritmu. <em>Let it go</em> pelan-pelan ya. 🍃<br><br>`;
+            }
+            if (hitungan.sedih > 0) {
+                saranHTML += `<strong>💡 Peluk Jauh buat ${sapaan}:</strong> Hei, aku lihat kamu sempat merasa sedih. Jangan lupa berterima kasih pada dirimu sendiri karena sudah bertahan sejauh ini. Beli makanan kesukaanmu atau istirahatlah lebih awal hari ini ya. Kamu berharga! 🫂<br><br>`;
+            }
+            if (hitungan.capek > 0) {
+                saranHTML += `<strong>💡 Kurangi Bebannya, ${sapaan}:</strong> Persentasemu menunjukkan kamu cukup kelelahan. Jangan paksa dirimu terus-menerus. Dunia nggak akan kiamat kalau kamu ambil jeda sebentar untuk tidur atau bersantai ria. Charge dulu energimu! 🔋<br><br>`;
+            }
+            
+            // Kalau semua seneng/biasa aja
+            if (hitungan.marah === 0 && hitungan.sedih === 0 && hitungan.capek === 0 && hariTerisi > 0) {
+                saranHTML = `<strong>✨ Yeay, ${sapaan}!</strong> Sepertinya minggu ini berjalan cukup damai dan menyenangkan buatmu. Pertahankan energi positif ini ya! Jangan lupa bersyukur untuk hal-hal kecil hari ini. 🌻`;
+                adviceContainer.style.borderLeftColor = '#10B981'; // Ganti warna border jadi hijau
+            } else {
+                adviceContainer.style.borderLeftColor = '#F59E0B'; // Kembali warna kuning oren
+            }
+
+            if (saranHTML !== '') {
+                adviceContainer.innerHTML = saranHTML;
+                adviceContainer.style.display = 'block';
+            } else {
+                adviceContainer.style.display = 'none';
+            }
+        }
+
+        // Render saat halaman pertama kali dibuka
+        renderHari();
+        hitungPersentase();
+    </script>
+</body>
+</html>
